@@ -84,7 +84,7 @@ def price_plot(symbol):
 
 if not filtered_data.empty:
     
-    num_company = st.sidebar.slider('How many **company** you want to show plots', 1, min(10,len(filtered_data)))
+    num_company = st.sidebar.slider('Select number of **companies** you want to show plots', 1, min(10,len(filtered_data)))
 
     if st.button("Show plots"):
         st.header('Stock Closing Price')
