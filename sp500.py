@@ -29,18 +29,22 @@ sector = df.groupby('GICS Sector')
 sector_unique = df['GICS Sector'].unique()
 sorted_sector = sorted(sector_unique)
 
-st.header("filtered data are display here")
-
 selected_sector = st.sidebar.multiselect('Sector', sorted_sector)
 
 filtered_data = df[(df['GICS Sector'].isin(selected_sector))]
-st.write(f" data filtered {filtered_data.shape[0]} rows and {filtered_data.shape[1]} colomns")
-st.write(filtered_data)
+
+if not filtered_data.empty:
+    st.header("Filtered data are display here")
+    st.write(f" data filtered {filtered_data.shape[0]} rows and {filtered_data.shape[1]} colomns")
+    st.write(filtered_data)
 
 def file_download(df):
     
     csv = df.to_csv(index=False)
     b64 = base64.b64encode(csv.encode()).decode()
+    st.markdown("""
+                ### Download the file
+                """)
     href = f'<a href="data:file/csv;base64,{b64}" download="SP500.csv">Download CSV File</a>'
     return href
 
@@ -78,9 +82,11 @@ def price_plot(symbol):
         st.pyplot(fig)
 
 
-num_company = st.sidebar.slider('Number of companies', 1, min(10, len(filtered_data)))
+if not filtered_data.empty:
+    
+    num_company = st.sidebar.slider('How many **company** you want to show plots', 1, min(10,len(filtered_data)))
 
-if st.button("Show plots"):
-    st.header('Stock Closing Price')
-    for symbol in symbols[:num_company]:
-        price_plot(symbol)
+    if st.button("Show plots"):
+        st.header('Stock Closing Price')
+        for symbol in symbols[:num_company]:
+            price_plot(symbol)
